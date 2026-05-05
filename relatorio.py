@@ -43,3 +43,11 @@ def gerar_relatorio(vendas):
     # 🥇 melhor dia
     melhor_dia = max(vendas_dia, key=vendas_dia.get)
     print(f"\n🥇 Melhor dia de vendas: {melhor_dia} (R$ {vendas_dia[melhor_dia]:.2f})")
+
+    print("\n🧠 INSIGHTS AUTOMÁTICOS")
+
+    melhor_categoria = max(categorias, key=categorias.get)
+    print(f"- Categoria mais forte: {melhor_categoria}")
+
+    melhor_produto = max(produtos, key=produtos.get)
+    print(f"- Produto mais vendido: {melhor_produto}")

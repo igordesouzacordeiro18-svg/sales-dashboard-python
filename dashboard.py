@@ -72,3 +72,4 @@ def dashboard(vendas):
 
     plt.tight_layout(rect=[0, 0, 1, 0.93])
     plt.show()
+    plt.savefig("dashboard.png")

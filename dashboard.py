@@ -1,6 +1,10 @@
 import matplotlib.pyplot as plt
 from collections import Counter, defaultdict
 
+plt.style.use("ggplot")
+plt.rcParams["figure.autolayout"] = True
+
+
 def dashboard(vendas):
     if not vendas:
         print("Sem dados para exibir.")
@@ -11,7 +15,13 @@ def dashboard(vendas):
     # =================
 
     faturamento_total = sum(v["valor"] * v["quantidade"] for v in vendas)
-    ticket_medio = faturamento_total / len(vendas)
+    total_itens = sum(v.get("quantidade", 0) for v in vendas)
+
+    ticket_medio = (
+        faturamento_total / total_itens
+        if total_itens > 0
+        else 0
+)
 
     vendas_dia = defaultdict(float)
     categorias = Counter()
@@ -24,20 +34,20 @@ def dashboard(vendas):
         categorias[v["categoria"]] += valor_total
         produtos[v["produto"]] += valor_total
 
-    melhor_dia = max(vendas_dia, key=vendas_dia.get)
+    melhor_dia = max(vendas_dia.items(), key=lambda x: x[1])[0]
 
     # =========================
     # 🖼️ LAYOUT DO DASHBOARD
     # =========================
 
-    fig = plt.figure(figsize=(16, 10))
+    fig = plt.figure(figsize=(18, 10), facecolor="white")
 
     # =========================
     # 📌 KPIs (TEXTO NO TOPO)
     # =========================
-    plt.figtext(0.1, 0.95, f"💰 Faturamento: R$ {faturamento_total:.2f}", fontsize=12)
-    plt.figtext(0.4, 0.95, f"🧾 Ticket médio: R$ {ticket_medio:.2f}", fontsize=12)
-    plt.figtext(0.7, 0.95, f"🥇 Melhor dia: {melhor_dia}", fontsize=12)
+    plt.figtext(0.05, 0.95, f"💰 Faturamento: R$ {faturamento_total:.2f}", fontsize=12, weight="bold")
+    plt.figtext(0.38, 0.95, f"🧾 Ticket médio: R$ {ticket_medio:.2f}", fontsize=12, weight="bold")
+    plt.figtext(0.72, 0.95, f"🥇 Melhor dia: {melhor_dia}", fontsize=12, weight="bold")
 
     # =========================
     # 📊 1. FATURAMENTO POR DIA
@@ -52,10 +62,12 @@ def dashboard(vendas):
     # 📦 2. CATEGORIAS
     # =========================
     ax2 = plt.subplot(2, 2, 2)
-    ax2.bar(categorias.keys(), categorias.values())
+
+    ax2.bar(categorias.keys(), categorias.values(), color="steelblue")
     ax2.set_title("Faturamento por Categoria")
     ax2.set_xlabel("Categoria")
     ax2.set_ylabel("R$")
+    ax2.tick_params(axis='x', rotation=30)
 
     # =========================
     # 🏆 3. TOP PRODUTOS
@@ -71,5 +83,5 @@ def dashboard(vendas):
     ax3.set_xlabel("R$")
 
     plt.tight_layout(rect=[0, 0, 1, 0.93])
-    plt.show()
     plt.savefig("dashboard.png")
+    plt.show()

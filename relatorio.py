@@ -1,5 +1,6 @@
 from collections import Counter, defaultdict
 
+
 def gerar_relatorio(vendas):
     if not vendas:
         print("Nenhuma venda encontrada.")
@@ -19,6 +20,16 @@ def gerar_relatorio(vendas):
         categorias[v["categoria"]] += v["quantidade"]
         vendas_dia[v["dia"]] += valor_total
 
+    ordem_dias = [
+        "Segunda",
+        "Terça",
+        "Quarta",
+        "Quinta",
+        "Sexta",
+        "Sábado",
+        "Domingo"
+    ]
+
     print("\n📊 RELATÓRIO SEMANAL DA LOJA MASCULINA\n")
 
     # 💰 faturamento
@@ -27,27 +38,34 @@ def gerar_relatorio(vendas):
 
     # 🏆 produtos
     print("🏆 Produtos mais vendidos:")
-    for p, q in produtos.most_common():
-        print(f"- {p}: {q} unidades")
+    for produto, quantidade in produtos.most_common():
+        print(f"- {produto}: {quantidade} unidades")
 
     # 📦 categorias
     print("\n📦 Categorias mais vendidas:")
-    for c, q in categorias.most_common():
-        print(f"- {c}: {q} unidades")
+    for categoria, quantidade in categorias.most_common():
+        print(f"- {categoria}: {quantidade} unidades")
 
     # 📅 vendas por dia
     print("\n📅 Faturamento por dia:")
-    for dia, valor in sorted(vendas_dia.items()):
-        print(f"- {dia}: R$ {valor:.2f}")
+    for dia in ordem_dias:
+        if dia in vendas_dia:
+            print(f"- {dia}: R$ {vendas_dia[dia]:.2f}")
 
-    # 🥇 melhor dia
-    melhor_dia = max(vendas_dia, key=vendas_dia.get)
-    print(f"\n🥇 Melhor dia de vendas: {melhor_dia} (R$ {vendas_dia[melhor_dia]:.2f})")
+    # 🥇 melhor dia (CORRIGIDO)
+    if vendas_dia:
+        melhor_dia = max(vendas_dia.items(), key=lambda x: x[1])[0]
+        valor_melhor_dia = vendas_dia[melhor_dia]
+        print(f"\n🥇 Melhor dia de vendas: {melhor_dia} (R$ {valor_melhor_dia:.2f})")
+    else:
+        print("\n🥇 Melhor dia de vendas: N/A")
 
     print("\n🧠 INSIGHTS AUTOMÁTICOS")
+    print("-" * 40)
 
     melhor_categoria = max(categorias, key=categorias.get)
     print(f"- Categoria mais forte: {melhor_categoria}")
 
     melhor_produto = max(produtos, key=produtos.get)
     print(f"- Produto mais vendido: {melhor_produto}")
+    print("-" * 40)

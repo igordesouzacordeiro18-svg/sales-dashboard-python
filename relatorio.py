@@ -7,7 +7,12 @@ def gerar_relatorio(vendas):
         return
 
     total_faturamento = sum(v["valor"] * v["quantidade"] for v in vendas)
-    ticket_medio = total_faturamento / len(vendas)
+    total_itens = sum(v["quantidade"] for v in vendas)
+    
+    ticket_medio = (
+        total_faturamento / total_itens
+        if total_itens > 0 else 0
+    )
 
     produtos = Counter()
     categorias = Counter()

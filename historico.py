@@ -1,3 +1,5 @@
+import csv
+
 def normalizar(texto):
     return (
         texto.strip()
@@ -92,8 +94,37 @@ def deletar_venda(vendas):
             print("❌ Índice inválido.")
             return
 
+        
         removida = vendas.pop(index)
-        print(f"\n✅ Venda removida: {removida['produto']}")
+        try:
+            with open("data/vendas.csv", "w", newline="", encoding="utf-8") as arquivo:
+                writer = csv.writer(arquivo)
+
+                # cabeçalho
+                writer.writerow([
+                    "dia",
+                    "produto",
+                    "categoria",
+                    "valor",
+                    "quantidade",
+                    "data_hora"
+                ])
+
+                # reescreve todas as vendas restantes
+                for v in vendas:
+                    writer.writerow([
+                        v["dia"],
+                        v["produto"],
+                        v["categoria"],
+                        v["valor"],
+                        v["quantidade"],
+                        v["data_hora"]
+                    ])
+
+            print(f"\n✅ Venda removida: {removida['produto']}")
+
+        except Exception as e:
+            print(f"❌ Erro ao atualizar CSV: {e}")
 
     except ValueError:
         print("❌ Digite um número válido.")

@@ -1,5 +1,6 @@
 from datetime import datetime
-import json
+import csv
+import os
 
 
 def cadastrar_venda(vendas):
@@ -78,8 +79,31 @@ def cadastrar_venda(vendas):
     vendas.append(nova_venda)
 
     try:
-        with open("data/vendas.json", "w", encoding="utf-8") as arquivo:
-            json.dump(vendas, arquivo, indent=4, ensure_ascii=False)
+        arquivo_existe = os.path.isfile("data/vendas.csv")
+
+        with open("data/vendas.csv", "a", newline="", encoding="utf-8") as arquivo:
+            writer = csv.writer(arquivo)
+
+            # cria cabeçalho se o arquivo estiver vazio
+            if not arquivo_existe:
+                writer.writerow([
+                    "dia",
+                    "produto",
+                    "categoria",
+                    "valor",
+                    "quantidade",
+                    "data_hora"
+                ])
+
+            writer.writerow([
+                dia,
+                produto,
+                categoria,
+                valor,
+                quantidade,
+                data_hora
+            ])
+
     except Exception as e:
         print(f"Erro ao salvar vendas: {e}")
 
